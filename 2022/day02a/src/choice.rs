@@ -1,41 +1,42 @@
-#[derive(Debug, PartialEq, Eq)]
+use std::str::FromStr;
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Choice {
-    Rock,
-    Paper,
-    Scissors,
+    Rock = 1,
+    Paper = 2,
+    Scissors = 3,
 }
 
-pub enum Outcome {
-    Win,
-    Lose,
-    Draw,
+#[derive(Debug)]
+pub enum ParseChoiceError {
+    Unknown(String),
+}
+
+impl FromStr for Choice {
+    type Err = ParseChoiceError;
+
+    fn from_str(choice: &str) -> Result<Self, Self::Err> {
+        match choice {
+            "A" | "X" => Ok(Choice::Rock),
+            "B" | "Y" => Ok(Choice::Paper),
+            "C" | "Z" => Ok(Choice::Scissors),
+            _ => Err(ParseChoiceError::Unknown(String::from(
+                "Unknown move choice {choice}",
+            ))),
+        }
+    }
 }
 
 impl Choice {
-    pub fn from_char(opponent_move: &char) -> Choice {
-        match opponent_move {
-            'A' | 'X' => Choice::Rock,
-            'B' | 'Y' => Choice::Paper,
-            'C' | 'Z' => Choice::Scissors,
-            _ => panic!("Invalid opponent's move {opponent_move}"),
-        }
-    }
-
-    pub fn beats(&self, other: &Choice) -> Outcome {
-        match (self, other) {
-            (Choice::Rock, Choice::Scissors)
-            | (Choice::Scissors, Choice::Paper)
-            | (Choice::Paper, Choice::Rock) => Outcome::Win,
-            _ if self == other => Outcome::Draw,
-            _ => Outcome::Lose,
-        }
-    }
-
-    pub fn score(&self) -> usize {
+    pub fn beats(&self) -> Choice {
         match self {
-            Choice::Rock => 1,
-            Choice::Paper => 2,
-            Choice::Scissors => 3,
+            Choice::Rock => Choice::Scissors,
+            Choice::Paper => Choice::Rock,
+            Choice::Scissors => Choice::Paper,
         }
+    }
+
+    pub fn score(self) -> usize {
+        self as usize
     }
 }

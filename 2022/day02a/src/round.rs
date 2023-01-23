@@ -1,26 +1,22 @@
-use crate::{choice::Outcome, Choice};
+use crate::{outcome::Outcome, Choice};
 
 #[derive(Debug)]
 pub struct Round {
-    player_move: Choice,
-    opponent_move: Choice,
+    pub player_move: Choice,
+    pub opponent_move: Choice,
 }
 
 impl Round {
-    pub fn new(player_move: Choice, opponent_move: Choice) -> Round {
-        Round {
-            player_move,
-            opponent_move,
-        }
-    }
+    pub fn score(&self) -> usize {
+        let player_beats = self.player_move.beats();
+        let opponent_beats = self.opponent_move.beats();
 
-    pub fn play(&self) -> usize {
-        let outcome: usize = match self.player_move.beats(&self.opponent_move) {
-            Outcome::Lose => 0,
-            Outcome::Draw => 3,
-            Outcome::Win => 6,
+        let outcome = match (player_beats, opponent_beats) {
+            _ if player_beats == self.opponent_move => Outcome::Win,
+            _ if opponent_beats == self.player_move => Outcome::Lose,
+            _ => Outcome::Draw,
         };
 
-        outcome + self.player_move.score()
+        outcome.score() + self.player_move.score()
     }
 }

@@ -3,6 +3,7 @@ use round::Round;
 use std::fs;
 
 mod choice;
+mod outcome;
 mod round;
 
 fn main() {
@@ -11,26 +12,22 @@ fn main() {
     let total_score: usize = input
         .lines()
         .map(read_round)
-        .map(|round| round.play())
+        .map(|round| round.score())
         .sum();
 
     println!("{total_score}");
 }
 
 fn read_round(line: &str) -> Round {
-    let mut chars = line.chars();
+    let mut choices = line
+        .split_whitespace()
+        .map(|choice| choice.parse().expect("Invalid move choice"));
 
-    let opponent_move = Choice::from_char(
-        &chars
-            .nth(0)
-            .expect("Could not read player's move in round {line}."),
-    );
+    let opponent_move = choices.next().expect("Couldn't read opponent move");
+    let player_move = choices.next().expect("Couldn't read player move");
 
-    let player_move = Choice::from_char(
-        &chars
-            .nth(1)
-            .expect("Could not read player's move in round {line}."),
-    );
-
-    Round::new(player_move, opponent_move)
+    Round {
+        player_move,
+        opponent_move,
+    }
 }
