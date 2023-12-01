@@ -1,6 +1,3 @@
 {
-    "rust-analyzer.linkedProjects": [
-        "2022/day01/Cargo.toml",
-        "2023/day01/Cargo.toml"
-    ]
+    "rust-analyzer.showUnlinkedFileNotification": false
 }
