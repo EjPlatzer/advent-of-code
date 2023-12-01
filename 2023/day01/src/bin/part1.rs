@@ -12,7 +12,7 @@ mod tests {
 
     #[test]
     fn test_example_input() {
-        let input = include_str!("exampleInput.txt");
+        let input = include_str!("../exampleInput.txt");
         let output = compute_output(input);
 
         assert_eq!(output, "todo!")
