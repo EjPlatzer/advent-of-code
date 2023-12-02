@@ -11,14 +11,26 @@ fn main() {
 
 fn compute_output(input: &str) -> usize {
     let games = input.lines().map(parse_game);
-    let max = CubeSet {
-        red: 12,
-        green: 13,
-        blue: 14,
-    };
-    let valid_games = games.filter(|game| game.sets.iter().all(|set| set.does_not_exceed(&max)));
+    games
+        .map(|game| {
+            game.sets
+                .iter()
+                .fold(CubeSet::default(), |minimum_set, current_set| CubeSet {
+                    red: minimum_set.red.max(current_set.red),
+                    green: minimum_set.green.max(current_set.green),
+                    blue: minimum_set.blue.max(current_set.blue),
+                })
+                .power()
+        })
+        .sum()
+    // let max = CubeSet {
+    //     red: 12,
+    //     green: 13,
+    //     blue: 14,
+    // };
+    // let valid_games = games.filter(|game| game.sets.iter().all(|set| set.does_not_exceed(&max)));
 
-    valid_games.map(|game| game.id).sum()
+    // valid_games.map(|game| game.id).sum()
 }
 
 fn parse_game(input: &str) -> Game {
@@ -86,6 +98,10 @@ impl CubeSet {
     fn does_not_exceed(&self, other: &CubeSet) -> bool {
         self.red <= other.red && self.green <= other.green && self.blue <= other.blue
     }
+
+    fn power(&self) -> usize {
+        self.red * self.green * self.blue
+    }
 }
 
 struct CubeDraw {
@@ -119,6 +135,6 @@ mod tests {
         let input = include_str!("../example_input.txt");
         let output = compute_output(input);
 
-        assert_eq!(output, 8)
+        assert_eq!(output, 2286)
     }
 }
