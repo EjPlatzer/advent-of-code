@@ -6,7 +6,7 @@ fn main() {
 }
 
 fn compute_output(input: &str) -> String {
-    String::from("todo!")
+    todo!("Solve part 1")
 }
 
 #[cfg(test)]
